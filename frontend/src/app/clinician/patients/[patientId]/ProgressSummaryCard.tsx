@@ -1,6 +1,6 @@
 "use client";
 
-import { Sparkles, TrendingUp, Target } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { useState } from "react";
 
 import { StatusBadge } from "@/components/clinician/StatusBadge";
@@ -51,7 +51,7 @@ export function ProgressSummaryCard({
   }
 
   return (
-    <div className="flex flex-col gap-4 rounded-card border border-line bg-surface p-6 shadow-card">
+    <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="flex items-center gap-2 text-sm text-ink-muted">
           <Sparkles aria-hidden="true" size={18} className="text-accent" />
@@ -96,11 +96,8 @@ export function ProgressSummaryCard({
           {(summary.strengths.length > 0 || summary.focus_areas.length > 0) && (
             <div className="grid gap-4 sm:grid-cols-2">
               {summary.strengths.length > 0 && (
-                <div className="rounded-control bg-success-soft p-4">
-                  <p className="flex items-center gap-2 font-bold text-success">
-                    <TrendingUp aria-hidden="true" size={18} />
-                    Strengths
-                  </p>
+                <div>
+                  <p className="font-bold">Strengths</p>
                   <ul className="mt-1 list-disc pl-5">
                     {summary.strengths.map((s) => (
                       <li key={s}>{s}</li>
@@ -109,11 +106,8 @@ export function ProgressSummaryCard({
                 </div>
               )}
               {summary.focus_areas.length > 0 && (
-                <div className="rounded-control bg-warning-soft p-4">
-                  <p className="flex items-center gap-2 font-bold text-warning">
-                    <Target aria-hidden="true" size={18} />
-                    Focus areas
-                  </p>
+                <div>
+                  <p className="font-bold">Focus areas</p>
                   <ul className="mt-1 list-disc pl-5">
                     {summary.focus_areas.map((s) => (
                       <li key={s}>{s}</li>

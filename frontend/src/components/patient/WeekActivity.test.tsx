@@ -3,7 +3,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { WeekActivity } from "./WeekActivity";
 
-vi.mock("@/components/CountUp", () => ({ CountUp: () => null }));
 vi.mock("./PracticeCalendar", async (importActual) => ({
   ...(await importActual<typeof import("./PracticeCalendar")>()),
   PracticeCalendar: () => null,

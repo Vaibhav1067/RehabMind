@@ -62,7 +62,7 @@ function Run({ run }: { run: AIRun }) {
   return (
     <li>
       <details>
-        <summary className="grid min-h-target cursor-pointer items-center gap-x-6 gap-y-1 px-5 py-3.5 hover:bg-canvas sm:grid-cols-[15rem_minmax(0,1fr)_auto]">
+        <summary className="grid min-h-target cursor-pointer items-center gap-x-6 gap-y-1 py-3.5 sm:grid-cols-[15rem_minmax(0,1fr)_auto]">
           <span>
             <StatusBadge tone={r.tone}>{r.label}</StatusBadge>
           </span>
@@ -76,7 +76,7 @@ function Run({ run }: { run: AIRun }) {
             {run.attempts.length === 1 ? "attempt" : "attempts"}
           </span>
         </summary>
-        <div className="flex flex-col gap-5 border-t border-line px-5 py-4">
+        <div className="flex flex-col gap-5 border-t border-line py-4">
           <p>{r.summary}</p>
 
           <dl className="grid gap-x-8 gap-y-2 text-sm sm:grid-cols-2 lg:grid-cols-3">
@@ -236,7 +236,7 @@ export default async function AIGenerationsPage({
             accepted first time · {counts.ai_generated_after_retry ?? 0}{" "}
             accepted after retry · {counts.rule_based_used ?? 0} rule-based.
           </p>
-          <ol className="divide-y divide-line overflow-hidden rounded-card border border-line bg-surface shadow-card">
+          <ol className="divide-y divide-line border-y border-line">
             {runs.map((run, i) => (
               <Run
                 key={`${run.session_id}-${run.position ?? run.created_at}-${i}`}

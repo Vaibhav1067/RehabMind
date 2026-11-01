@@ -16,12 +16,7 @@ export default async function PhrasesPage() {
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-3">
       <div className="flex shrink-0 items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold sm:text-3xl">Everyday phrases</h1>
-          <p className="text-ink-muted">
-            Short conversations to practise, one line at a time.
-          </p>
-        </div>
+        <h1 className="text-2xl font-bold sm:text-3xl">Everyday phrases</h1>
         <Link
           href="/patient"
           className="inline-flex min-h-target items-center gap-2 font-bold text-ink-muted hover:text-ink"

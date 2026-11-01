@@ -155,7 +155,7 @@ export function AddUserForm({
       <form
         onSubmit={onSubmit}
         noValidate
-        className="flex flex-col gap-6 rounded-card border border-line bg-surface p-6 shadow-card sm:p-8"
+        className="flex flex-col gap-6 rounded-card border border-line bg-surface p-6 sm:p-8"
       >
         <h2 className="text-xl font-bold">Add a user</h2>
 

@@ -1,6 +1,5 @@
 "use client";
 
-import { CountUp } from "@/components/CountUp";
 import type { PracticeActivity } from "@/lib/api/schemas";
 
 import { MoodCheckin } from "./MoodCheckin";
@@ -44,35 +43,24 @@ export function WeekActivity({
   return (
     <section
       aria-labelledby="week-heading"
-      className="grid shrink-0 gap-x-8 gap-y-3 rounded-card border border-line bg-surface shadow-card p-4 sm:p-5 md:grid-cols-[minmax(0,1fr)_auto] short:max-md:gap-y-2"
+      className="flex shrink-0 flex-col gap-3 border-t border-line pt-5"
     >
-      <div className="flex min-w-0 flex-col gap-2">
-        <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2">
-          <div className="flex flex-wrap items-baseline gap-x-3">
-            <h2 id="week-heading" className="text-xl font-bold">
-              {name ? `${name}’s practice` : "Your practice"}
-            </h2>
-            <p className="text-ink-muted">{message}</p>
-          </div>
-          {checkIn && <MoodCheckin />}
+      <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2">
+        <div className="flex flex-wrap items-baseline gap-x-3">
+          <h2 id="week-heading" className="text-xl font-bold">
+            {name ? `${name}’s practice` : "Your practice"}
+          </h2>
+          <p className="text-ink-muted">{message}</p>
         </div>
-        <PracticeCalendar activity={activity} name={name} />
+        {checkIn && <MoodCheckin />}
       </div>
-      <dl className="grid grid-cols-2 gap-3 md:w-44 md:grid-cols-1 md:content-center short:max-md:grid-cols-1 short:max-md:gap-0">
-        <Stat label="Pictures practised" value={activity.pictures_practised} />
-        <Stat label="Sessions finished" value={activity.sessions_completed} />
-      </dl>
+      <PracticeCalendar activity={activity} name={name} />
+      <p className="text-ink-muted tabular-nums">
+        {activity.pictures_practised}{" "}
+        {activity.pictures_practised === 1 ? "picture" : "pictures"} practised ·{" "}
+        {activity.sessions_completed}{" "}
+        {activity.sessions_completed === 1 ? "session" : "sessions"} finished
+      </p>
     </section>
-  );
-}
-
-function Stat({ label, value }: { label: string; value: number }) {
-  return (
-    <div className="flex flex-col-reverse short:max-md:flex-row-reverse short:max-md:items-baseline short:max-md:justify-end short:max-md:gap-2">
-      <dt className="text-ink-muted">{label}</dt>
-      <dd className="text-3xl leading-tight font-bold tabular-nums short:max-md:text-xl">
-        <CountUp value={value} />
-      </dd>
-    </div>
   );
 }

@@ -1,4 +1,4 @@
-import { BrainCircuit, CheckCircle2, CircleX, Cpu } from "lucide-react";
+import { CheckCircle2, CircleX, Cpu } from "lucide-react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
@@ -166,18 +166,13 @@ export default async function AIPipelinePage({
         title="Patient performance: learned ability model"
         description="Online logistic (Rasch/Elo-style) estimate per objective, from scored answers since the latest fresh start. Context for the AI; the difficulty itself comes from the deterministic rule."
       >
-        <dl className="grid gap-4 md:grid-cols-3">
+        <dl className="grid gap-x-8 gap-y-6 md:grid-cols-3">
           {Object.values(data.abilities).map((a) => (
             <div
               key={a.objective}
-              className="flex flex-col gap-1 rounded-card border border-line bg-surface p-5 shadow-card"
+              className="flex flex-col gap-1"
             >
-              <dt className="flex items-center gap-2 font-bold">
-                <BrainCircuit
-                  aria-hidden="true"
-                  size={18}
-                  className="text-accent"
-                />
+              <dt className="font-bold">
                 {OBJECTIVE_NAMES[a.objective] ?? a.objective}
               </dt>
               <dd className="text-sm text-ink-muted">
@@ -207,7 +202,7 @@ export default async function AIPipelinePage({
               <li key={`${t.issued_at}-${t.position}`}>
                 <details
                   open={i === 0}
-                  className="rounded-card border border-line bg-surface shadow-card"
+                  className="rounded-card border border-line bg-surface"
                 >
                   <summary className="flex min-h-target cursor-pointer flex-wrap items-center gap-3 p-5">
                     <span className="font-bold">Picture {t.position}</span>

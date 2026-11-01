@@ -1,4 +1,3 @@
-import { Activity, Gauge, MessageSquareText, Timer } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -98,22 +97,18 @@ export default async function SessionDetailPage({
       <Facts
         items={[
           {
-            icon: Activity,
             label: "Status",
             value: SESSION_STATUS[s.status] ?? s.status,
           },
           {
-            icon: MessageSquareText,
             label: "Answered",
             value: `${s.attempted} of ${s.planned}`,
           },
           {
-            icon: Gauge,
             label: "Average difficulty",
             value: s.avg_difficulty?.toFixed(1) ?? "—",
           },
           {
-            icon: Timer,
             label: "Duration",
             value: formatDuration(s.duration_s),
           },
@@ -123,11 +118,11 @@ export default async function SessionDetailPage({
         <OutcomeText o={s.outcomes} />
       </p>
 
-      <ol className="flex flex-col gap-3">
+      <ol className="divide-y divide-line border-y border-line">
         {data.exercises.map((ex) => (
           <li
             key={ex.position}
-            className={`grid gap-4 rounded-card border border-line bg-surface shadow-card p-5 ${ex.image_url ? "sm:grid-cols-[96px_1fr]" : ""}`}
+            className={`grid gap-4 py-5 ${ex.image_url ? "sm:grid-cols-[96px_1fr]" : ""}`}
           >
             {ex.image_url && (
               // eslint-disable-next-line @next/next/no-img-element
@@ -136,7 +131,7 @@ export default async function SessionDetailPage({
                 alt={`Picture: ${ex.target}`}
                 width={96}
                 height={96}
-                className="rounded-control border border-line p-3"
+                className="rounded-control bg-surface p-3"
               />
             )}
             <div className="flex flex-col gap-2">

@@ -12,12 +12,12 @@ const variants: Record<Variant, string> = {
   primary: "bg-accent text-white hover:bg-accent-hover",
   secondary:
     "border-2 border-accent bg-surface text-accent hover:bg-accent-soft",
-  quiet: "text-ink-muted underline-offset-4 hover:text-ink hover:underline",
+  quiet: "px-0! text-ink-muted underline-offset-4 hover:text-ink hover:underline",
 };
 
 const sizes: Record<Size, string> = {
   md: "px-5 text-base",
-  lg: "min-h-16 px-8 text-xl",
+  lg: "min-h-16 px-4 text-xl sm:px-8",
 };
 
 /** Button styling for links that act as primary navigation (e.g. "Start practice"). */

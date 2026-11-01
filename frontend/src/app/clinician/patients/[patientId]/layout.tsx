@@ -1,10 +1,10 @@
+import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { Breadcrumbs } from "@/components/clinician/Breadcrumbs";
 import { PatientNav } from "@/components/clinician/PatientNav";
 import { PrintButton } from "@/components/clinician/PrintButton";
 import { Alert } from "@/components/ui/Alert";
-import { Avatar } from "@/components/ui/Avatar";
 import { AIStatusSchema, PatientOverviewSchema } from "@/lib/api/clinician";
 import { backendGet } from "@/lib/api/server";
 import { formatDate } from "@/lib/format";
@@ -28,10 +28,15 @@ export default async function PatientLayout({
   return (
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-3">
-        <Breadcrumbs patientId={patientId} patientName={patient.display_name} />
+        <Link
+          href="/clinician"
+          className="no-print inline-flex min-h-target w-fit items-center gap-2 text-sm text-ink-muted hover:text-ink"
+        >
+          <ArrowLeft aria-hidden="true" size={16} />
+          All patients
+        </Link>
         <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-          <p className="flex items-center gap-3 text-2xl font-bold tracking-tight">
-            <Avatar name={patient.display_name} size="sm" />
+          <p className="text-2xl font-bold tracking-tight">
             {patient.display_name}
           </p>
           <p className="text-base text-ink-muted">

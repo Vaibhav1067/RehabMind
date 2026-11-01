@@ -33,14 +33,14 @@ export default async function CreditsPage() {
   return (
     <>
       <SkipLink />
-      <header className="strap">
+      <header className="border-b border-line bg-accent-soft">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-6 py-3">
           <p className="flex items-center gap-3">
             <BrandMark />
           </p>
           <Link
             href={me ? ROLE_HOME[me.role] : "/login"}
-            className="font-bold text-ink underline-offset-4 hover:underline"
+            className="inline-flex min-h-target items-center font-bold text-ink underline-offset-4 hover:underline"
           >
             {me ? "Back to the app" : "Sign in"}
           </Link>
@@ -74,11 +74,11 @@ export default async function CreditsPage() {
             otherwise unchanged. Name agreement is the share of people in the
             BOSS study who gave the photo its most common name.
           </p>
-          <ul className="grid grid-cols-1 gap-px overflow-hidden rounded-card border border-line bg-line min-[480px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          <ul className="grid grid-cols-1 gap-x-6 gap-y-2 min-[480px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {boss.map((c) => (
               <li
                 key={c.image}
-                className="flex items-center gap-3 bg-surface p-3"
+                className="flex items-center gap-3 py-1"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -87,7 +87,7 @@ export default async function CreditsPage() {
                   width={56}
                   height={56}
                   loading="lazy"
-                  className="size-14 shrink-0 object-contain"
+                  className="size-14 shrink-0 rounded-control bg-surface object-contain p-1"
                 />
                 <span className="flex min-w-0 flex-col">
                   <a
@@ -109,9 +109,9 @@ export default async function CreditsPage() {
           <h2 id="scenes" className="text-xl font-bold">
             Scenes: Wikimedia Commons
           </h2>
-          <ul className="divide-y divide-line overflow-hidden rounded-card border border-line bg-surface shadow-card">
+          <ul className="divide-y divide-line border-y border-line">
             {scenes.map((c) => (
-              <li key={c.image} className="flex items-center gap-4 px-4 py-3">
+              <li key={c.image} className="flex items-center gap-4 py-3">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={c.image}

@@ -129,7 +129,7 @@ export function TalkBoard({ ownWords }: { ownWords: PersonalWord[] }) {
       {/* What was said last, large enough to show to someone. */}
       <div
         aria-live="polite"
-        className="flex min-h-16 shrink-0 items-center gap-3 rounded-card border border-line bg-surface shadow-card px-4 py-2"
+        className="flex min-h-16 shrink-0 items-center gap-3 border-b border-line pb-3"
       >
         <Volume2
           aria-hidden="true"
@@ -156,7 +156,7 @@ export function TalkBoard({ ownWords }: { ownWords: PersonalWord[] }) {
             <button
               type="button"
               onClick={() => setBig(true)}
-              className="inline-flex min-h-target items-center gap-2 rounded-control border-2 border-line-strong px-3 font-bold hover:bg-canvas"
+              className="inline-flex min-h-target items-center gap-2 rounded-control border-2 border-accent px-3 font-bold text-accent hover:bg-accent-soft"
             >
               <Maximize2 aria-hidden="true" size={18} />
               Show big
@@ -198,7 +198,7 @@ export function TalkBoard({ ownWords }: { ownWords: PersonalWord[] }) {
             key={t.label}
             type="button"
             onClick={() => speak(t.say)}
-            className="flex min-h-24 flex-col items-center justify-center gap-2 rounded-card border-2 border-line bg-surface p-2 text-center transition-[border-color,transform] hover:border-accent active:scale-[0.97]"
+            className="flex min-h-24 flex-col items-center justify-center gap-2 rounded-card border-2 border-line bg-surface p-2 text-center transition-colors hover:border-accent"
           >
             {t.image ? (
               // eslint-disable-next-line @next/next/no-img-element

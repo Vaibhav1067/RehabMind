@@ -115,7 +115,7 @@ function Practise({ script, onExit }: { script: Script; onExit: () => void }) {
 
   if (finished) {
     return (
-      <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-5 rounded-card border border-line bg-surface shadow-card p-8 text-center">
+      <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-5 text-center">
         <Check
           aria-hidden="true"
           size={48}
@@ -151,7 +151,7 @@ function Practise({ script, onExit }: { script: Script; onExit: () => void }) {
 
   const current = STEPS.find((s) => s.id === step)!;
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-4 rounded-card border border-line bg-surface shadow-card p-5 sm:p-8">
+    <div className="flex min-h-0 flex-1 flex-col gap-4">
       <div className="flex items-center justify-between gap-3">
         <Button variant="quiet" onClick={onExit}>
           <ArrowLeft aria-hidden="true" size={18} />
@@ -170,7 +170,7 @@ function Practise({ script, onExit }: { script: Script; onExit: () => void }) {
             className={`flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-bold ${
               s.id === step
                 ? "bg-accent text-white"
-                : "bg-canvas text-ink-muted"
+                : "text-ink-muted"
             }`}
           >
             <s.Icon aria-hidden="true" size={16} />

@@ -1,6 +1,5 @@
 "use client";
 
-import { Lightbulb } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { apiFetch } from "@/lib/api/client";
@@ -47,14 +46,8 @@ export function AiTip({ exerciseId }: { exerciseId: string }) {
   return (
     <div
       role="status"
-      className="animate-rise flex w-full max-w-xl gap-3 rounded-card border border-accent/20 bg-accent-soft px-4 py-3 text-left"
+      className="flex w-full max-w-xl rounded-control bg-accent-soft px-4 py-3 text-left"
     >
-      <span
-        aria-hidden="true"
-        className="grid size-9 shrink-0 place-items-center rounded-full bg-surface text-warning"
-      >
-        <Lightbulb size={22} />
-      </span>
       <div className="flex flex-col gap-1">
         <p className="text-sm font-bold text-accent-hover">A tip for you</p>
         <p className="text-xl">{tip.feedback}</p>

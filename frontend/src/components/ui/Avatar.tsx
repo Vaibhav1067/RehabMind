@@ -33,7 +33,7 @@ export function Avatar({
   className,
 }: {
   name: string;
-  size?: "sm" | "md" | "lg";
+  size?: "md" | "lg";
   className?: string;
 }) {
   return (
@@ -41,7 +41,6 @@ export function Avatar({
       aria-hidden="true"
       className={cn(
         "grid shrink-0 place-items-center rounded-full font-bold",
-        size === "sm" && "size-9 text-sm",
         size === "md" && "size-11 text-base",
         size === "lg" && "size-16 text-2xl",
         tone(name),

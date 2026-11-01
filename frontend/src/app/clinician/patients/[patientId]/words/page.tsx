@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { EmptyState } from "@/components/clinician/EmptyState";
-import { StatusBadge } from "@/components/clinician/StatusBadge";
 import { WordProgressListSchema, type WordProgress } from "@/lib/api/clinician";
 import { backendGet } from "@/lib/api/server";
 import { daysSince, errorType, outcome } from "@/lib/format";
@@ -16,19 +15,16 @@ const GROUPS = [
     title: "Words to work on",
     description:
       "Named correctly less than half the time, over at least two tries.",
-    tone: "warning",
   },
   {
     status: "learning",
     title: "Learning",
     description: "Mixed results, or not practised often enough to tell.",
-    tone: "info",
   },
   {
     status: "secure",
     title: "Secure",
     description: "Named correctly the last three times.",
-    tone: "success",
   },
 ] as const;
 
@@ -47,14 +43,14 @@ function lastPractised(iso: string) {
 
 function WordCard({ w }: { w: WordProgress }) {
   return (
-    <li className="flex gap-4 rounded-card border border-line bg-surface shadow-card p-4">
+    <li className="flex gap-4">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={w.image_url}
         alt=""
         width={72}
         height={72}
-        className="size-18 shrink-0 rounded-control border border-line bg-white object-contain p-1"
+        className="size-18 shrink-0 rounded-control bg-white object-contain p-1"
       />
       <div className="flex min-w-0 flex-col gap-1.5">
         <p className="text-lg font-bold">{w.word}</p>
@@ -96,13 +92,12 @@ export default async function WordsPage({
   if (!words) notFound();
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-10">
       <div>
-        <h1 className="text-2xl font-bold">Words</h1>
+        <h1 className="sr-only">Words</h1>
         <p className="max-w-prose text-ink-muted">
-          Every picture practised with a one-word answer (naming, sentence
-          completion, repetition, recognition, category), since the latest fresh
-          start. Use it to choose which words to practise in sessions.
+          Every picture practised with a one-word answer since the latest fresh
+          start.
         </p>
       </div>
 
@@ -112,19 +107,6 @@ export default async function WordsPage({
         </EmptyState>
       ) : (
         <>
-          <dl className="grid grid-cols-3 gap-3 sm:max-w-xl">
-            {GROUPS.map((g) => (
-              <div
-                key={g.status}
-                className="rounded-card border border-line bg-surface shadow-card p-4"
-              >
-                <dt className="text-sm text-ink-muted">{g.title}</dt>
-                <dd className="text-2xl font-bold tabular-nums">
-                  {words.filter((w) => w.status === g.status).length}
-                </dd>
-              </div>
-            ))}
-          </dl>
           {GROUPS.map((g) => {
             const group = words.filter((w) => w.status === g.status);
             if (group.length === 0) return null;
@@ -138,12 +120,12 @@ export default async function WordsPage({
                   <h2 id={`${g.status}-heading`} className="text-xl font-bold">
                     {g.title}
                   </h2>
-                  <StatusBadge tone={g.tone}>
+                  <span className="text-ink-muted tabular-nums">
                     {group.length} {group.length === 1 ? "word" : "words"}
-                  </StatusBadge>
+                  </span>
                 </div>
                 <p className="text-ink-muted">{g.description}</p>
-                <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                <ul className="grid gap-x-8 gap-y-6 sm:grid-cols-2 xl:grid-cols-3">
                   {group.map((w) => (
                     <WordCard key={w.picture} w={w} />
                   ))}

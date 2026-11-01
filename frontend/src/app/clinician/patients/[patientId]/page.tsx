@@ -1,16 +1,6 @@
 import {
   ChartLine,
-  CircleCheck,
-  CircleMinus,
   ClipboardList,
-  Gauge,
-  Keyboard,
-  Lightbulb,
-  ListChecks,
-  MessageCircleHeart,
-  MessageSquareText,
-  Shapes,
-  Timer,
 } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -89,19 +79,11 @@ export default async function PatientOverviewPage({
   const errors = Object.entries(ov.error_profile)
     .filter(([t]) => t !== "correct")
     .sort((a, b) => b[1] - a[1]);
-  const topError = errors[0];
-  const ratedSessions = Object.values(ov.difficulty_ratings).reduce(
-    (a, b) => a + b,
-    0,
-  );
-  const errorBreakdown = errors
-    .map(([t, n]) => `${errorType(t)}: ${n}`)
-    .join(" · ");
   const attempted = o.correct + o.near_miss + o.incorrect + o.skipped;
   const base = `/clinician/patients/${patientId}`;
 
   return (
-    <div className="flex flex-col gap-10">
+    <div className="flex flex-col gap-12">
       <h1 className="sr-only">{ov.display_name}: overview</h1>
 
       {ov.last_reset && (
@@ -143,66 +125,55 @@ export default async function PatientOverviewPage({
             <Facts
               items={[
                 {
-                  icon: ListChecks,
                   label: "Sessions completed",
                   value: ov.sessions_completed,
                   hint: `${ov.sessions_stopped_early} stopped early${ov.has_active_session ? " · 1 in progress" : ""}`,
                 },
                 {
-                  icon: MessageSquareText,
-                  label: "Answers given",
-                  value: attempted,
-                },
-                {
-                  icon: CircleCheck,
                   label: "Correct",
                   value: percent(o.correct, attempted),
-                  hint: `${o.correct} correct · ${o.near_miss} close`,
+                  hint: `${o.correct} of ${attempted} · ${o.near_miss} close`,
                 },
                 {
-                  icon: CircleMinus,
-                  label: "Incorrect or skipped",
-                  value: o.incorrect + o.skipped,
-                  hint: `${o.incorrect} incorrect · ${o.skipped} skipped`,
-                },
-                {
-                  icon: Lightbulb,
-                  label: "Answers after a hint",
-                  value: ov.hinted_responses,
-                  hint: "Correct-with-hint holds the level",
-                },
-                {
-                  icon: Timer,
-                  label: "Median time to answer",
-                  value: formatMs(ov.median_latency_ms),
-                  hint: "Skipped answers excluded",
-                },
-                {
-                  icon: Gauge,
                   label: "Current working level",
                   value: ov.current_working_difficulty ?? "—",
                   hint: "Set by the progression rule, within limits",
                 },
                 {
-                  icon: MessageCircleHeart,
-                  label: "How sessions felt (patient)",
-                  value: ratedSessions || "—",
-                  hint:
+                  label: "Median time to answer",
+                  value: formatMs(ov.median_latency_ms),
+                  hint: "Skipped answers excluded",
+                },
+              ]}
+            />
+            <details className="print-open">
+              <summary className="min-h-target cursor-pointer py-2 font-bold text-accent">
+                More figures
+              </summary>
+              <dl className="mt-2 grid gap-x-8 gap-y-3 sm:grid-cols-2">
+                {[
+                  [
+                    "Incorrect or skipped",
+                    `${o.incorrect} incorrect · ${o.skipped} skipped`,
+                  ],
+                  [
+                    "Answers after a hint",
+                    `${ov.hinted_responses}. Correct-with-hint holds the level`,
+                  ],
+                  [
+                    "How sessions felt (patient)",
                     Object.entries(ov.difficulty_ratings)
                       .map(([r, n]) => `${DIFFICULTY_RATING[r] ?? r}: ${n}`)
                       .join(" · ") || "No ratings yet",
-                },
-                {
-                  icon: Shapes,
-                  label: "Most common naming error",
-                  value: topError ? errorType(topError[0]) : "—",
-                  hint: errorBreakdown || "No naming errors yet",
-                },
-                {
-                  icon: Keyboard,
-                  label: "Answer methods",
-                  value: ov.by_mode.length,
-                  hint:
+                  ],
+                  [
+                    "Naming errors",
+                    errors
+                      .map(([t, n]) => `${errorType(t)}: ${n}`)
+                      .join(" · ") || "No naming errors yet",
+                  ],
+                  [
+                    "Answer methods",
                     ov.by_mode
                       .map(
                         (m) =>
@@ -215,9 +186,15 @@ export default async function PatientOverviewPage({
                       (ov.speech_misheard
                         ? ` · ${ov.speech_misheard} misheard (the patient said no)`
                         : "") || "None yet",
-                },
-              ]}
-            />
+                  ],
+                ].map(([label, value]) => (
+                  <div key={label}>
+                    <dt className="text-sm text-ink-muted">{label}</dt>
+                    <dd>{value}</dd>
+                  </div>
+                ))}
+              </dl>
+            </details>
             {trend && trend.length >= MIN_TREND_SESSIONS ? (
               <div className="grid gap-6 lg:grid-cols-2">
                 <AnswersBySessionChart trend={trend} />
@@ -232,14 +209,6 @@ export default async function PatientOverviewPage({
                 include answers.
               </EmptyState>
             )}
-            <div>
-              <Link
-                href={`${base}/sessions`}
-                className={`${buttonClasses("secondary")} no-print`}
-              >
-                View session history
-              </Link>
-            </div>
           </>
         )}
       </Section>
@@ -247,14 +216,14 @@ export default async function PatientOverviewPage({
       <Section
         id="phrases"
         title="Everyday phrases"
-        description="Scripts practised at home in the last 14 days. Lines said are the patient's own report."
+        description="Last 14 days. Lines said are the patient's own report."
       >
         {practisedPhrases.length ? (
-          <ul className="divide-y divide-line overflow-hidden rounded-card border border-line bg-surface shadow-card">
+          <ul className="divide-y divide-line border-y border-line">
             {practisedPhrases.map((p) => (
               <li
                 key={p.id}
-                className="flex flex-wrap items-center justify-between gap-x-6 gap-y-1 px-5 py-3"
+                className="flex flex-wrap items-center justify-between gap-x-6 gap-y-1 py-3"
               >
                 <span className="font-bold">{p.title}</span>
                 <span className="text-ink-muted tabular-nums">
@@ -275,7 +244,7 @@ export default async function PatientOverviewPage({
       <Section
         id="wellbeing"
         title="Wellbeing"
-        description="How the patient said they felt, one tap a day on their home page (last 14 days)."
+        description="How the patient said they felt, last 14 days."
       >
         {moods && moods.length ? (
           <div className="flex flex-col gap-3">
@@ -293,7 +262,7 @@ export default async function PatientOverviewPage({
                 return (
                   <li
                     key={m.day}
-                    className="flex w-20 flex-col items-center gap-1 rounded-control border border-line bg-surface py-2"
+                    className="flex w-24 flex-col items-center gap-1 py-1"
                   >
                     <Icon
                       aria-hidden="true"
@@ -323,7 +292,7 @@ export default async function PatientOverviewPage({
       <Section
         id="limits"
         title="Current practice limits"
-        description="Set by the care team. The AI and the rule-based generator always work inside these."
+        description="Every exercise stays inside these."
         action={
           <Link
             href={`${base}/constraints`}
@@ -334,7 +303,7 @@ export default async function PatientOverviewPage({
         }
       >
         {active ? (
-          <div className="flex flex-col gap-4 rounded-card border border-line bg-surface p-6 shadow-card">
+          <div className="flex flex-col gap-4">
             <div className="flex flex-wrap items-center gap-3">
               <StatusBadge tone="success">
                 Active: version {active.version}
@@ -363,7 +332,6 @@ export default async function PatientOverviewPage({
       <Section
         id="ai-summary"
         title="AI progress summary"
-        description="A short written summary of the figures above, per rehabilitation objective."
       >
         <ProgressSummaryCard
           patientId={patientId}
@@ -375,7 +343,7 @@ export default async function PatientOverviewPage({
       <Section
         id="fresh-start"
         title="Fresh start"
-        description="Reset progress when starting a new therapy block. Nothing is deleted, and the reset is recorded."
+        description="For a new therapy block. Nothing is deleted, and the reset is recorded."
       >
         <ResetProgress patientId={patientId} patientName={ov.display_name} />
       </Section>

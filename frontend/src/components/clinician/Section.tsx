@@ -1,6 +1,4 @@
-import type { LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
-import { CountUp } from "@/components/CountUp";
 
 /** Titled content region; headings give screen-reader users a navigable outline. */
 export function Section({
@@ -34,51 +32,18 @@ export function Section({
   );
 }
 
-// Columns chosen from the item count so no row ends with an orphan cell.
-const COLUMNS: Record<number, string> = {
-  2: "md:grid-cols-2",
-  3: "md:grid-cols-3",
-  4: "md:grid-cols-4",
-  5: "md:grid-cols-5",
-  6: "md:grid-cols-3",
-  8: "md:grid-cols-4",
-  9: "md:grid-cols-3",
-  10: "md:grid-cols-5",
-};
-
-/**
- * Headline figures as one container split by 1px dividers (label above value). Figures are
- * type, not tiles: no icons. `icon` is accepted for compatibility and not drawn.
- */
+/** Headline figures as type: label above value, no boxes and no icons. */
 export function Facts({
   items,
 }: {
-  items: {
-    label: string;
-    value: ReactNode;
-    hint?: string;
-    icon?: LucideIcon;
-  }[];
+  items: { label: string; value: ReactNode; hint?: string }[];
 }) {
   return (
-    <dl
-      className={`grid grid-cols-2 gap-px overflow-hidden rounded-card border border-line bg-line shadow-card ${
-        COLUMNS[items.length] ?? "md:grid-cols-4"
-      }`}
-    >
-      {items.map(({ label, value, hint }, i) => (
-        <div
-          key={label}
-          className={`flex flex-col gap-1 bg-surface p-5 ${
-            items.length % 2 === 1 && i === items.length - 1
-              ? "col-span-2 md:col-span-1"
-              : ""
-          } ${items.length > 4 ? "md:p-4" : ""}`}
-        >
+    <dl className="grid grid-cols-2 gap-x-8 gap-y-6 md:grid-cols-4">
+      {items.map(({ label, value, hint }) => (
+        <div key={label} className="flex flex-col gap-1">
           <dt className="text-sm text-ink-muted">{label}</dt>
-          <dd className="text-2xl font-bold tabular-nums">
-            {typeof value === "number" ? <CountUp value={value} /> : value}
-          </dd>
+          <dd className="text-2xl font-bold tabular-nums">{value}</dd>
           {hint && <dd className="text-sm text-ink-muted">{hint}</dd>}
         </div>
       ))}

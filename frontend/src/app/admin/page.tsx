@@ -3,7 +3,6 @@ import { z } from "zod";
 
 import { StatusBadge } from "@/components/clinician/StatusBadge";
 import { Alert } from "@/components/ui/Alert";
-import { Avatar } from "@/components/ui/Avatar";
 import { buttonClasses } from "@/components/ui/Button";
 import { UserSummarySchema } from "@/lib/api/schemas";
 import { backendGet, getCurrentUser } from "@/lib/api/server";
@@ -49,7 +48,6 @@ export default async function AdminHome() {
           <AddUserForm clinicians={clinicians} patients={patients} />
         </div>
       </details>
-      <h2 className="mt-2 text-xl font-bold">User list</h2>
       {unassigned > 0 && (
         <Alert tone="warning">
           {unassigned === 1 ? "1 patient has" : `${unassigned} patients have`}{" "}
@@ -60,9 +58,9 @@ export default async function AdminHome() {
       <div
         tabIndex={0}
         aria-label="Scrollable table"
-        className="overflow-x-auto rounded-card border border-line bg-surface shadow-card"
+        className="overflow-x-auto border-y border-line"
       >
-        <table className="w-full text-left">
+        <table className="w-full text-left [&_td:first-child]:pl-0 [&_th:first-child]:pl-0 [&_td:last-child]:pr-0 [&_th:last-child]:pr-0">
           <caption className="sr-only">All user accounts</caption>
           <thead className="border-b border-line text-sm text-ink-muted">
             <tr>
@@ -71,9 +69,6 @@ export default async function AdminHome() {
               </th>
               <th scope="col" className="px-4 py-3">
                 Role
-              </th>
-              <th scope="col" className="px-4 py-3">
-                Status
               </th>
               <th scope="col" className="px-4 py-3">
                 Care team
@@ -87,28 +82,21 @@ export default async function AdminHome() {
             {users.map((u) => (
               <tr key={u.id} className="align-top">
                 <td className="px-4 py-3">
-                  <span className="flex items-center gap-3">
-                    <Avatar name={u.display_name} size="sm" />
-                    <span className="flex min-w-0 flex-col">
-                      <span className="font-bold whitespace-nowrap">
-                        {u.display_name}
-                      </span>
-                      <span className="text-sm [overflow-wrap:anywhere] text-ink-muted">
-                        {u.email}
-                      </span>
+                  <span className="flex min-w-0 flex-col">
+                    <span className="font-bold whitespace-nowrap">
+                      {u.display_name}
+                    </span>
+                    <span className="text-sm [overflow-wrap:anywhere] text-ink-muted">
+                      {u.email}
                     </span>
                   </span>
                 </td>
                 <td className="px-4 py-3">
-                  <span className="rounded-full bg-canvas px-3 py-1 text-sm font-bold capitalize">
-                    {u.role}
-                  </span>
-                </td>
-                <td className="px-4 py-3">
-                  {u.is_active ? (
-                    <StatusBadge tone="success">Active</StatusBadge>
-                  ) : (
-                    <StatusBadge tone="neutral">Disabled</StatusBadge>
+                  <span className="capitalize">{u.role}</span>
+                  {!u.is_active && (
+                    <span className="mt-1 block">
+                      <StatusBadge tone="neutral">Disabled</StatusBadge>
+                    </span>
                   )}
                 </td>
                 <td className="px-4 py-3">

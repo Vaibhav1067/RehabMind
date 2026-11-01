@@ -442,7 +442,7 @@ export function ExerciseVisual({ t }: { t: Trace }) {
           alt={`Picture: ${t.picture ?? ""}`}
           width={240}
           height={180}
-          className="h-48 w-auto rounded-2xl border-8 border-surface object-cover shadow-card border border-line"
+          className="h-48 w-auto rounded-2xl border-8 border-surface object-cover border border-line"
         />
       )}
       <div className="flex flex-col gap-3">
@@ -500,7 +500,7 @@ export function ResponseVisual({ t }: { t: Trace }) {
         initial={{ opacity: 0, x: -16, scale: 0.96 }}
         animate={{ opacity: 1, x: 0, scale: 1 }}
         transition={{ type: "spring", stiffness: 160, damping: 18 }}
-        className="rounded-3xl rounded-bl-md bg-surface px-6 py-4 text-2xl shadow-card border border-line"
+        className="rounded-3xl rounded-bl-md bg-surface px-6 py-4 text-2xl border border-line"
       >
         {r.text ? `“${r.text}”` : "(the patient chose “I’m not sure”)"}
       </motion.p>
@@ -541,7 +541,7 @@ export function SpeechVisual({ t }: { t: Trace }) {
         ))}
       </div>
       <ArrowRight aria-hidden="true" className="text-ink-muted" />
-      <div className="rounded-2xl bg-surface px-5 py-3 shadow-card border border-line">
+      <div className="rounded-2xl bg-surface px-5 py-3 border border-line">
         <p className="text-sm text-ink-muted">
           faster-whisper transcript (on this machine)
         </p>
@@ -738,7 +738,7 @@ export function NextVisual({ next }: { next: Trace | undefined }) {
           alt={`Next picture: ${next.picture ?? ""}`}
           width={160}
           height={120}
-          className="h-28 w-auto rounded-2xl border-4 border-surface object-cover shadow-card"
+          className="h-28 w-auto rounded-2xl border-4 border-surface object-cover"
         />
       )}
       <div>

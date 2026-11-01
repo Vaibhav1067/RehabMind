@@ -32,7 +32,7 @@ const COMPARE_VERSIONS = 20;
 function VersionRow({ v }: { v: ConstraintVersion }) {
   return (
     <li>
-      <details className="px-5 py-1">
+      <details className="py-1">
         <summary className="flex min-h-target cursor-pointer flex-wrap items-center gap-3">
           <span className="font-bold">Version {v.version}</span>
           {v.is_active ? (
@@ -77,19 +77,13 @@ export default async function ConstraintsPage({
   const active = versions.find((v) => v.is_active) ?? null;
 
   return (
-    <div className="flex flex-col gap-10">
-      <div>
-        <h1 className="text-2xl font-bold">Plan</h1>
-        <p className="max-w-prose text-ink-muted">
-          What the patient is working towards, and the limits every exercise
-          stays inside.
-        </p>
-      </div>
+    <div className="flex flex-col gap-12">
+      <h1 className="sr-only">Plan</h1>
 
       <Section
         id="goals"
         title="Goals"
-        description="Shown to the patient in plain words, with progress measured from their practice."
+        description="Shown to the patient, with progress from their practice."
       >
         <GoalsPanel patientId={patientId} goals={goals} />
       </Section>
@@ -97,7 +91,7 @@ export default async function ConstraintsPage({
       <Section
         id="own-words"
         title="Own words"
-        description="Photos of the patient's people, pets and things, added here or by their family. Practised with the catalogue pictures (category “My words”)."
+        description="Photos of the patient's people, pets and things, practised with the catalogue pictures."
       >
         <OwnWords
           apiBase={`/patients/${patientId}/personal-words`}
@@ -106,17 +100,13 @@ export default async function ConstraintsPage({
         />
       </Section>
 
-      <div>
-        <h2 className="text-xl font-bold">Practice limits</h2>
-        <p className="max-w-prose text-ink-muted">
-          Every exercise, AI-written or rule-based, stays inside these limits.
-          Changes create a new version; old versions are kept.
-        </p>
-      </div>
-
-      <Section id="active" title="Active version">
+      <Section
+        id="active"
+        title="Practice limits"
+        description="Every exercise stays inside these. Changes create a new version; old versions are kept."
+      >
         {active ? (
-          <div className="flex flex-col gap-4 rounded-card border border-line bg-surface p-6 shadow-card">
+          <div className="flex flex-col gap-4">
             <div className="flex flex-wrap items-center gap-3">
               <StatusBadge tone="success">
                 Version {active.version} · active
@@ -147,7 +137,7 @@ export default async function ConstraintsPage({
         <Section
           id="history"
           title="Version history"
-          description="Read-only. Every version the patient has had, newest first."
+          description="Every version the patient has had, newest first."
         >
           {versions.length > 1 && (
             <VersionCompare
@@ -156,7 +146,7 @@ export default async function ConstraintsPage({
               }
             />
           )}
-          <ol className="divide-y divide-line overflow-hidden rounded-card border border-line bg-surface shadow-card">
+          <ol className="divide-y divide-line border-y border-line">
             {(showAll ? versions : versions.slice(0, RECENT_VERSIONS)).map(
               (v) => (
                 <VersionRow key={v.id} v={v} />

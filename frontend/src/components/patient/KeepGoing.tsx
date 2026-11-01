@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+import { buttonClasses } from "@/components/ui/Button";
 import { ApiError, apiFetch } from "@/lib/api/client";
 import { SessionStateSchema } from "@/lib/api/schemas";
 
@@ -56,12 +57,12 @@ export function KeepGoing({
           {error}
         </p>
       )}
-      <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-3">
+      <div className="mt-3 flex flex-wrap items-center gap-2">
         <button
           type="button"
           onClick={keepGoing}
           disabled={busy}
-          className="inline-flex min-h-16 w-full items-center justify-center gap-3 rounded-control bg-accent px-8 text-xl font-bold whitespace-nowrap text-white transition-[background-color,transform] hover:bg-accent-hover active:scale-[0.98] disabled:opacity-70 sm:w-fit"
+          className={`${buttonClasses("primary", "lg")} w-full whitespace-nowrap sm:w-fit`}
         >
           {busy ? "Opening…" : "Keep going"}
           <ArrowRight aria-hidden="true" size={24} />
@@ -69,7 +70,7 @@ export function KeepGoing({
         <TalkLink />
         <Link
           href="/patient/practice"
-          className="inline-flex min-h-target items-center text-lg font-bold underline underline-offset-4"
+          className="inline-flex min-h-14 items-center px-4 text-lg font-bold text-ink-muted underline underline-offset-4 hover:text-ink"
         >
           Start new practice
         </Link>

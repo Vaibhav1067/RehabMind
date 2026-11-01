@@ -47,7 +47,7 @@ export function SendNote({
   return (
     <div className="flex flex-col gap-4">
       <form onSubmit={send} className="flex flex-col gap-2">
-        <label htmlFor="note" className="font-bold">
+        <label htmlFor="note" className="text-xl font-bold">
           A note for {name}
         </label>
         <textarea

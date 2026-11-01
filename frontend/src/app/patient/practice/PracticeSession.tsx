@@ -3,7 +3,6 @@
 import {
   CircleCheck,
   HeartHandshake,
-  Lightbulb,
   Coffee,
   Sparkles,
   Volume2,
@@ -14,7 +13,6 @@ import {
   useEffect,
   useRef,
   useState,
-  type CSSProperties,
   type FormEvent,
 } from "react";
 
@@ -225,7 +223,7 @@ export function PracticeSession() {
     // Two columns on wide screens (picture | result), so "Next picture" stays in view
     // even with a tip; one centred column on phones.
     return (
-      <div className="flex min-h-0 flex-1 flex-col items-center gap-4 rounded-card border border-line bg-surface px-5 py-5 text-center shadow-card sm:gap-5 sm:py-8 lg:grid lg:grid-cols-2 lg:grid-rows-[minmax(0,1fr)] lg:gap-10 lg:px-10 lg:text-left short:gap-3 short:sm:py-4">
+      <div className="flex min-h-0 flex-1 flex-col items-center gap-4 text-center sm:gap-5 lg:grid lg:grid-cols-2 lg:grid-rows-[minmax(0,1fr)] lg:items-center lg:gap-12 lg:text-left short:gap-3">
         {view.imageUrl && (
           <div className="relative min-h-16 w-full max-w-md flex-1 lg:h-full lg:max-w-none">
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -234,7 +232,7 @@ export function PracticeSession() {
               alt=""
               width={200}
               height={200}
-              className="absolute inset-0 size-full rounded-card border border-line bg-surface shadow-card object-contain p-2"
+              className="absolute inset-0 size-full rounded-card bg-surface object-contain p-2"
             />
           </div>
         )}
@@ -312,7 +310,7 @@ export function PracticeSession() {
           {offerBreak && (
             <div
               role="status"
-              className="flex w-full max-w-xl flex-wrap items-center justify-between gap-3 rounded-card border border-line bg-canvas px-4 py-3 text-left"
+              className="flex w-full max-w-xl flex-wrap items-center justify-between gap-3 text-left"
             >
               <span className="flex items-center gap-2 text-lg">
                 <Coffee aria-hidden="true" size={20} className="text-accent" />
@@ -342,15 +340,8 @@ export function PracticeSession() {
     // One screen: the summary and the way home on the left, the patient's words and the
     // rating on the right (stacked on phones).
     return (
-      <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-4 rounded-card border border-line bg-surface px-5 py-5 text-center shadow-card sm:gap-6 sm:py-8 lg:grid lg:grid-cols-2 lg:gap-10 lg:px-10">
+      <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-4 text-center sm:gap-6 lg:grid lg:grid-cols-2 lg:gap-12">
         <div className="flex flex-col items-center gap-3 sm:gap-4">
-          {/* On a phone the sentence below says the same; the ring would cost a third
-              of the screen. */}
-          {s && (
-            <div className="max-lg:hidden">
-              <CompletionRing done={s.practiced} total={state.total} />
-            </div>
-          )}
           <h1 className="text-3xl font-bold sm:text-4xl">Practice complete</h1>
           {s && (
             <p className="text-xl sm:text-2xl">
@@ -495,7 +486,7 @@ export function PracticeSession() {
                 // Absolutely placed in the space left, so it can never push anything off screen.
                 isPhoto
                   ? "absolute inset-0 size-full rounded-card bg-surface object-contain p-2"
-                  : "absolute inset-0 size-full rounded-card border border-line bg-surface shadow-card object-contain p-6"
+                  : "absolute inset-0 size-full rounded-card bg-surface object-contain p-6"
               }
             />
           )}
@@ -523,15 +514,9 @@ export function PracticeSession() {
               {hints > 0 && (
                 <div
                   role="status"
-                  className="flex w-full gap-3 rounded-card border border-accent/20 bg-accent-soft px-4 py-3"
+                  className="w-full rounded-control bg-accent-soft px-4 py-3"
                 >
-                  <span
-                    aria-hidden="true"
-                    className="grid size-11 shrink-0 place-items-center rounded-full bg-surface text-warning"
-                  >
-                    <Lightbulb size={22} />
-                  </span>
-                  <ul className="flex flex-col gap-1 self-center text-lg sm:text-xl">
+                  <ul className="flex flex-col gap-1 text-lg sm:text-xl">
                     {ex.cues.slice(0, hints).map((cue) => (
                       <li key={cue}>
                         <Cue text={cue} />
@@ -670,49 +655,6 @@ export function PracticeSession() {
   );
 }
 
-/** Pictures practised out of planned. Always framed as progress, never as errors. */
-function CompletionRing({ done, total }: { done: number; total: number }) {
-  const r = 52;
-  const length = 2 * Math.PI * r;
-  const share = total > 0 ? Math.min(done / total, 1) : 0;
-  return (
-    // The sentence below the ring states the same number for assistive technology.
-    <div
-      aria-hidden="true"
-      className="relative grid size-28 place-items-center sm:size-36 short:size-24"
-    >
-      <svg viewBox="0 0 120 120" className="absolute inset-0 -rotate-90">
-        <circle
-          cx="60"
-          cy="60"
-          r={r}
-          fill="none"
-          strokeWidth="10"
-          className="stroke-accent-soft"
-        />
-        <circle
-          cx="60"
-          cy="60"
-          r={r}
-          fill="none"
-          strokeWidth="10"
-          strokeLinecap="round"
-          strokeDasharray={length}
-          strokeDashoffset={length * (1 - share)}
-          className="animate-ring-fill stroke-accent"
-          style={{ "--ring-length": length } as CSSProperties}
-        />
-      </svg>
-      <p className="flex flex-col items-center leading-tight">
-        <span className="text-4xl font-bold tabular-nums">{done}</span>
-        <span className="text-base text-ink-muted">
-          {done === 1 ? "picture" : "pictures"}
-        </span>
-      </p>
-    </div>
-  );
-}
-
 /** Hint text with the quoted first sound ("It starts with “b…”") visually emphasised. */
 function Cue({ text }: { text: string }) {
   const match = /“([^”…]+)…”/.exec(text);
@@ -733,8 +675,8 @@ function Cue({ text }: { text: string }) {
 const OUTCOME_ICON = {
   correct: { Icon: CircleCheck, cls: "bg-success-soft text-success" },
   near_miss: { Icon: Sparkles, cls: "bg-accent-soft text-accent-hover" },
-  incorrect: { Icon: HeartHandshake, cls: "bg-[#e5edf9] text-[#2f5ea8]" },
-  skipped: { Icon: HeartHandshake, cls: "bg-[#e5edf9] text-[#2f5ea8]" },
+  incorrect: { Icon: HeartHandshake, cls: "bg-accent-soft text-accent-hover" },
+  skipped: { Icon: HeartHandshake, cls: "bg-accent-soft text-accent-hover" },
 } as const;
 
 /** Friendly outcome icon; never red, so a missed word never feels like failure. */
@@ -743,17 +685,9 @@ function OutcomeIcon({ outcome }: { outcome: keyof typeof OUTCOME_ICON }) {
   return (
     <span
       aria-hidden="true"
-      className="relative grid size-12 shrink-0 place-items-center sm:size-14"
+      className={`grid size-12 shrink-0 animate-pop place-items-center rounded-full sm:size-14 ${cls}`}
     >
-      {/* The peak of each picture: naming it on your own gets one soft, expanding ring. */}
-      {outcome === "correct" && (
-        <span className="absolute inset-0 animate-ripple rounded-full bg-success" />
-      )}
-      <span
-        className={`relative grid size-full animate-pop place-items-center rounded-full ${cls}`}
-      >
-        <Icon size={28} />
-      </span>
+      <Icon size={28} />
     </span>
   );
 }
@@ -821,11 +755,10 @@ function SessionRecap({ sessionId }: { sessionId: string }) {
         {named.length ? "Words you named today" : "Words you practised today"}
       </h2>
       <ul className="flex flex-wrap justify-center gap-3 max-sm:[&>li:nth-child(n+4)]:hidden short:[&>li:nth-child(n+5)]:hidden">
-        {shown.map((w, i) => (
+        {shown.map((w) => (
           <li
             key={w.word}
-            style={{ "--i": i } as CSSProperties}
-            className="flex w-24 animate-rise flex-col items-center gap-1 rounded-card border border-line bg-surface shadow-card p-2 [animation-delay:calc(var(--i)*80ms)]"
+            className="flex w-24 flex-col items-center gap-1"
           >
             {w.image_url && (
               // eslint-disable-next-line @next/next/no-img-element
@@ -834,7 +767,7 @@ function SessionRecap({ sessionId }: { sessionId: string }) {
                 alt=""
                 width={96}
                 height={96}
-                className="size-16 object-contain max-sm:size-12 short:size-12"
+                className="size-16 rounded-control bg-surface object-contain p-1 max-sm:size-12 short:size-12"
               />
             )}
             <span lang="en" className="text-lg font-bold">

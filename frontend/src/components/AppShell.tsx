@@ -3,7 +3,6 @@ import type { ReactNode } from "react";
 
 import { BrandMark } from "@/components/BrandMark";
 import { SignOutButton } from "@/components/SignOutButton";
-import { Avatar } from "@/components/ui/Avatar";
 import { SkipLink } from "@/components/ui/SkipLink";
 
 /** Shared page frame: one predictable header, one main region. */
@@ -21,7 +20,7 @@ export function AppShell({
   /**
    * true (the patient's area): exactly one screen tall. Each page lays itself out in the
    * height that is left, so nothing needs scrolling; main only scrolls as a last resort on
-   * very small screens. Credits move into the header.
+   * very small screens. Credits move into the header (on a phone, My information has them).
    */
   fit?: boolean;
   children: ReactNode;
@@ -38,9 +37,11 @@ export function AppShell({
   return (
     <div className={fit ? "flex h-dvh flex-col" : "contents"}>
       <SkipLink />
-      <header className={`strap z-40 ${fit ? "shrink-0" : "sticky top-0"}`}>
+      <header
+        className={`z-40 border-b border-line bg-accent-soft ${fit ? "shrink-0" : "sticky top-0"}`}
+      >
         <div
-          className={`mx-auto flex ${width} items-center justify-between gap-4 px-6 py-2`}
+          className={`mx-auto flex ${width} items-center justify-between gap-3 px-4 py-2 sm:gap-4 sm:px-6`}
         >
           <p className="flex items-center gap-3">
             <BrandMark />
@@ -50,23 +51,20 @@ export function AppShell({
               </span>
             )}
           </p>
-          <div className="flex items-center gap-3">
-            {/* On a phone the header has no room: the home page shows the link instead. */}
-            {fit && (
-              <span className="hidden sm:contents">
+          <div className="flex items-center gap-3 sm:gap-5">
+            {fit ? (
+              <>
                 <Link
                   href="/patient/my-information"
-                  className="inline-flex min-h-target items-center text-sm text-ink-muted underline underline-offset-4 hover:text-ink"
+                  className="inline-flex min-h-target items-center text-center text-sm leading-tight text-ink-muted underline underline-offset-4 hover:text-ink"
                 >
                   My information
                 </Link>
-                {credits}
-              </span>
+                <span className="hidden sm:contents">{credits}</span>
+              </>
+            ) : (
+              <span className="hidden font-bold sm:inline">{name}</span>
             )}
-            <span className="hidden items-center gap-2.5 sm:flex">
-              <Avatar name={name} size="sm" />
-              <span className="font-bold">{name}</span>
-            </span>
             <SignOutButton />
           </div>
         </div>
@@ -77,8 +75,8 @@ export function AppShell({
         tabIndex={fit ? 0 : -1}
         className={
           fit
-            ? `mx-auto flex min-h-0 w-full ${width} flex-1 flex-col overflow-y-auto px-4 py-3 sm:px-6 sm:py-4`
-            : `mx-auto w-full ${width} flex-1 px-6 py-6 sm:py-10`
+            ? `mx-auto flex min-h-0 w-full ${width} flex-1 flex-col overflow-y-auto px-4 py-4 sm:px-6 sm:py-6`
+            : `mx-auto w-full ${width} flex-1 px-6 py-8 sm:py-12`
         }
       >
         {children}

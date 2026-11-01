@@ -13,7 +13,6 @@ import {
   formatDateTime,
   DIFFICULTY_RATING,
   formatDuration,
-  responseMode,
   SESSION_STATUS,
 } from "@/lib/format";
 
@@ -46,7 +45,7 @@ export default async function SessionsPage({
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-bold">Session history</h1>
+        <h1 className="sr-only">Session history</h1>
         <p className="text-ink-muted">
           {data.total} {data.total === 1 ? "session" : "sessions"} recorded,
           newest first.
@@ -90,8 +89,8 @@ export default async function SessionsPage({
         </EmptyState>
       ) : (
         <>
-          <div className="overflow-x-auto rounded-card border border-line bg-surface shadow-card">
-            <table className="w-full min-w-[820px] text-left">
+          <div className="overflow-x-auto border-y border-line">
+            <table className="w-full min-w-[640px] text-left [&_td:first-child]:pl-0 [&_th:first-child]:pl-0 [&_td:last-child]:pr-0 [&_th:last-child]:pr-0">
               <caption className="sr-only">
                 Practice sessions, page {page} of {pages}
               </caption>
@@ -108,12 +107,6 @@ export default async function SessionsPage({
                   </th>
                   <th scope="col" className="px-5 py-3">
                     Results
-                  </th>
-                  <th scope="col" className="px-5 py-3 text-right">
-                    Avg. difficulty
-                  </th>
-                  <th scope="col" className="px-5 py-3">
-                    Answer methods
                   </th>
                   <th scope="col" className="px-5 py-3 text-right">
                     Duration
@@ -157,12 +150,6 @@ export default async function SessionsPage({
                     </td>
                     <td className="px-5 py-3 text-sm">
                       <OutcomeText o={s.outcomes} />
-                    </td>
-                    <td className="px-5 py-3 text-right tabular-nums">
-                      {s.avg_difficulty?.toFixed(1) ?? "—"}
-                    </td>
-                    <td className="px-5 py-3">
-                      {s.modes.map(responseMode).join(", ") || "—"}
                     </td>
                     <td className="px-5 py-3 text-right tabular-nums">
                       {formatDuration(s.duration_s)}

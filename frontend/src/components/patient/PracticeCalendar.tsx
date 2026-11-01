@@ -6,7 +6,6 @@ import {
   type HeatmapColumn,
   HeatmapInteractionBoundary,
   HeatmapInteractionProvider,
-  HeatmapLegend,
   HeatmapTooltip,
   HeatmapXAxis,
   HeatmapYAxis,
@@ -100,9 +99,6 @@ export function PracticeCalendar({
             </HeatmapChart>
           </HeatmapInteractionBoundary>
         </HeatmapInteractionProvider>
-      </div>
-      <div aria-hidden="true" className="self-end short:max-md:hidden">
-        <HeatmapLegend />
       </div>
     </figure>
   );

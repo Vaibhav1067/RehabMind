@@ -30,7 +30,9 @@ export function SignOutButton() {
       busy={busy}
       className="whitespace-nowrap"
     >
-      {!busy && <LogOut aria-hidden="true" size={18} />}
+      {!busy && (
+        <LogOut aria-hidden="true" size={18} className="max-sm:hidden" />
+      )}
       Sign out
     </Button>
   );

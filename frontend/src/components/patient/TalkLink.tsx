@@ -2,7 +2,7 @@ import { MessagesSquare, Quote } from "lucide-react";
 import Link from "next/link";
 
 const link =
-  "inline-flex min-h-14 items-center justify-center gap-2 rounded-control border-2 border-accent bg-surface px-5 text-xl font-bold text-accent transition-colors hover:bg-accent-soft";
+  "inline-flex min-h-14 items-center justify-center gap-2 rounded-control px-4 text-lg font-bold text-accent transition-colors hover:bg-accent-soft";
 
 /** The ways to the talk board and everyday phrases, next to the main practice button. */
 export function TalkLink() {
