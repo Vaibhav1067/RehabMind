@@ -35,7 +35,7 @@ async function shot(page, name) {
   await page.waitForLoadState("networkidle");
   // The dev-server badge is not part of the app.
   await page.addStyleTag({ content: "nextjs-portal { display: none; }" });
-  await page.waitForTimeout(4000); // numbers finish counting up
+  await page.waitForTimeout(4000); // charts finish drawing
   await page.screenshot({ path: fileURLToPath(new URL(`${name}.png`, OUT)) });
   console.log("saved", name);
 }
