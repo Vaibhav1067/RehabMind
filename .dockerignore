@@ -1,0 +1,10 @@
+# For builds whose context is the repository root (deploy/render/Dockerfile).
+*
+!backend/pyproject.toml
+!backend/uv.lock
+!backend/alembic.ini
+!backend/migrations
+!backend/app
+!deploy/render/start.sh
+**/__pycache__
+**/*.pyc

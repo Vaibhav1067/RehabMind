@@ -1,0 +1,22 @@
+# Render Blueprint: the backend on a free instance. See docs/deployment.md.
+services:
+  - type: web
+    name: rehabmind-api
+    runtime: docker
+    plan: free
+    region: singapore
+    branch: deploy/free-hosting
+    dockerfilePath: ./deploy/render/Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/health/live
+    envVars:
+      - key: POSTGRES_HOST
+        sync: false
+      - key: POSTGRES_MIGRATOR_PASSWORD
+        sync: false
+      - key: POSTGRES_APP_PASSWORD
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: FRONTEND_ORIGINS
+        sync: false
