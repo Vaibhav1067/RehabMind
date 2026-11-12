@@ -12,6 +12,7 @@ import os
 import uuid
 from dataclasses import dataclass
 from functools import lru_cache
+from pathlib import Path
 from typing import Protocol
 
 import boto3
@@ -62,6 +63,31 @@ class S3ObjectStore:
             return False
 
 
+class FileObjectStore:
+    """Local directory store for single-container deployments (API and worker share a
+    filesystem). Blobs are already encrypted by EphemeralAudioStore before they get here."""
+
+    def __init__(self, root: str) -> None:
+        self.root = Path(root)
+        self.root.mkdir(parents=True, exist_ok=True, mode=0o700)
+
+    def _path(self, key: str) -> Path:
+        # Keys are "audio/<uuid>"; keep only the last segment so no key escapes the root.
+        return self.root / Path(key).name
+
+    def put(self, key: str, data: bytes) -> None:
+        self._path(key).write_bytes(data)
+
+    def get(self, key: str) -> bytes:
+        return self._path(key).read_bytes()
+
+    def delete(self, key: str) -> None:
+        self._path(key).unlink(missing_ok=True)
+
+    def exists(self, key: str) -> bool:
+        return self._path(key).is_file()
+
+
 @dataclass
 class EphemeralAudioStore:
     store: ObjectStore
@@ -96,4 +122,8 @@ def get_audio_store() -> EphemeralAudioStore:
     key = base64.b64decode(get_settings().audio_encryption_key.get_secret_value())
     if len(key) != 32:
         raise ValueError("AUDIO_ENCRYPTION_KEY must be 32 bytes (base64)")
-    return EphemeralAudioStore(S3ObjectStore(), key)
+    s = get_settings()
+    store: ObjectStore = (
+        FileObjectStore(s.audio_file_dir) if s.audio_store == "file" else S3ObjectStore()
+    )
+    return EphemeralAudioStore(store, key)

@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import os
 
 import boto3
 from botocore.config import Config
@@ -21,6 +22,10 @@ async def live() -> dict[str, str]:
 
 def _check_storage() -> None:
     s = get_settings()
+    if s.audio_store == "file":
+        if not os.access(s.audio_file_dir, os.W_OK):
+            raise OSError("audio directory not writable")
+        return
     client = boto3.client(
         "s3",
         endpoint_url=s.s3_endpoint_url,
