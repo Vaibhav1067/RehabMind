@@ -70,6 +70,7 @@ def get_ai_provider() -> AIProvider | None:
                 settings.groq_base_url,
                 settings.groq_api_key.get_secret_value(),
                 settings.groq_model,
+                fallback_models=tuple(settings.groq_fallback_models),
                 timeout_s=settings.ai_timeout_s,
             )
         else:  # pragma: no cover - guarded by settings validation

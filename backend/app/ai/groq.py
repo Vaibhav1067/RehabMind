@@ -24,11 +24,16 @@ class GroqAIProvider:
         api_key: str,
         model: str,
         *,
+        fallback_models: tuple[str, ...] = (),
         timeout_s: float = 20,
         transport: httpx.AsyncBaseTransport | None = None,
     ):
-        """`transport` is a test hook (httpx.MockTransport)."""
+        """`transport` is a test hook (httpx.MockTransport).
+
+        Rate limits are per model, so when the main model answers 429 the same request
+        goes to the next model in `fallback_models` instead of failing."""
         self.model = model
+        self.models = (model, *fallback_models)
         self._client = httpx.AsyncClient(
             base_url=base_url.rstrip("/"),
             headers={"Authorization": f"Bearer {api_key}"},
@@ -36,9 +41,9 @@ class GroqAIProvider:
             transport=transport,
         )
 
-    def payload(self, request: GenerationRequest) -> dict[str, Any]:
+    def payload(self, request: GenerationRequest, model: str | None = None) -> dict[str, Any]:
         return {
-            "model": self.model,
+            "model": model or self.model,
             "messages": [
                 {"role": "system", "content": request.system_prompt},
                 {"role": "user", "content": request.user_prompt},
@@ -59,10 +64,13 @@ class GroqAIProvider:
         }
 
     async def generate(self, request: GenerationRequest) -> GenerationResult:
-        try:
-            r = await self._client.post("/chat/completions", json=self.payload(request))
-        except httpx.HTTPError as e:
-            raise AIProviderError(f"groq unreachable: {type(e).__name__}") from e
+        for model in self.models:
+            try:
+                r = await self._client.post("/chat/completions", json=self.payload(request, model))
+            except httpx.HTTPError as e:
+                raise AIProviderError(f"groq unreachable: {type(e).__name__}") from e
+            if r.status_code != 429:
+                break
         if r.status_code != 200:
             raise AIProviderError(f"groq returned HTTP {r.status_code}")
         try:

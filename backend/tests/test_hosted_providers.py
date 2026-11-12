@@ -70,6 +70,31 @@ def test_groq_ai_failures_are_recoverable_provider_errors(response):
         asyncio.run(_ai(lambda _: response).generate(REQUEST))
 
 
+def test_groq_ai_rate_limit_moves_to_the_next_model():
+    asked: list[str] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        model = json.loads(request.content)["model"]
+        asked.append(model)
+        if model == "small":
+            return httpx.Response(429, json={"error": "rate limit"})
+        return httpx.Response(
+            200, json={"model": model, "choices": [{"message": {"content": "{}"}}]}
+        )
+
+    provider = GroqAIProvider(
+        "https://groq.test",
+        "k" * 20,
+        "small",
+        fallback_models=("large",),
+        transport=httpx.MockTransport(handler),
+    )
+    result = asyncio.run(provider.generate(REQUEST))
+
+    assert asked == ["small", "large"]
+    assert result.model == "large"
+
+
 def test_groq_ai_network_error_is_a_provider_error():
     def handler(request: httpx.Request) -> httpx.Response:
         raise httpx.ConnectError("down", request=request)

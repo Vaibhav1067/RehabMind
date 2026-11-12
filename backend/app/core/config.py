@@ -56,6 +56,8 @@ class Settings(BaseSettings):
     groq_api_key: SecretStr | None = None
     groq_base_url: str = "https://api.groq.com/openai/v1"
     groq_model: str = "openai/gpt-oss-20b"
+    # Tried in order when the main model is rate limited (limits are per model).
+    groq_fallback_models: list[str] = ["openai/gpt-oss-120b"]
     groq_speech_model: str = "whisper-large-v3-turbo"
     # "whisper" = faster-whisper on this machine; "groq" = hosted Whisper.
     speech_provider: Literal["whisper", "groq"] = "whisper"
