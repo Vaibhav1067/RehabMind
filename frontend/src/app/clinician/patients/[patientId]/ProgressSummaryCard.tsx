@@ -56,7 +56,7 @@ export function ProgressSummaryCard({
         <p className="flex items-center gap-2 text-sm text-ink-muted">
           <Sparkles aria-hidden="true" size={18} className="text-accent" />
           {model
-            ? `Written by the local language model ${model}`
+            ? `Written by the ${status?.provider === "ollama" ? "local" : "hosted"} language model ${model}`
             : status?.provider === "fake"
               ? "Offline test provider (not a language model)"
               : "AI is not enabled; a rule-based summary is used"}
