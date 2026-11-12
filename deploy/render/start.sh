@@ -17,6 +17,12 @@ export AUDIO_STORE=file AUDIO_FILE_DIR=/home/app/audio
 export AUDIO_ENCRYPTION_KEY="$(python -c 'import base64, secrets; print(base64.b64encode(secrets.token_bytes(32)).decode())')"
 # Required by the settings model; unused with the file audio store.
 export S3_ACCESS_KEY=unused S3_SECRET_KEY="$(token)"
+# Without a Groq key the site still runs: AI is off (rule-based practice) and spoken
+# answers fail to transcribe, which the app already treats as "try again or type".
+if [ -z "${GROQ_API_KEY:-}" ]; then
+  echo "GROQ_API_KEY is not set: AI off, speech recognition unavailable" >&2
+  export AI_PROVIDER=none GROQ_API_KEY=not-configured
+fi
 export AI_PROVIDER="${AI_PROVIDER:-groq}" SPEECH_PROVIDER="${SPEECH_PROVIDER:-groq}"
 export AI_FAKE_FAULT_RATE=0
 
