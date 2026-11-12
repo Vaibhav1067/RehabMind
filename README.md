@@ -13,6 +13,17 @@ Aphasia makes it hard to find, say or put words together. Recovery takes a lot o
 
 > **Research prototype.** It isn't a diagnostic tool and hasn't been clinically validated. It runs on seeded test accounts only, and no patient has used it. The clinician is always the authority.
 
+## Live demo
+
+**[rehabmind.vercel.app](https://rehabmind.vercel.app)** runs the whole application on free hosting: the frontend on Vercel, the backend on Render, the database on Neon. Accounts are created by an admin, so there is no public sign-up; demo logins are available from the author.
+
+Two things differ from the self-hosted version described below:
+
+- **The AI is hosted, not local.** A free 512 MB server cannot run the models, so the demo sends prompts and recordings to Groq (`openai/gpt-oss-20b` for text, `whisper-large-v3-turbo` for speech). It holds demo data only. The self-hosted stack keeps everything on your own machine.
+- **Free-tier limits apply.** When the AI's rate limit is reached, practice carries on with rule-based exercises. After a quiet spell the first page can take up to a minute to load.
+
+How it is set up: [deployment](docs/deployment.md#free-hosted-demo-no-server-no-card).
+
 ## Screenshots
 
 | Sign in | Patient home |
@@ -70,7 +81,7 @@ The AI writes content, and the application owns the rehabilitation rules. Scores
 | Technique | What it does | Where |
 |---|---|---|
 | **Generative AI** | Personalises exercise wording, writes short feedback tips and drafts clinician summaries | [`backend/app/ai/`](backend/app/ai/) |
-| **Deep learning** | Qwen2.5 3B (a transformer, through Ollama) generates text; faster-whisper `small.en` transcribes speech. Both are pretrained and run locally. | [`ai/ollama.py`](backend/app/ai/ollama.py), [`speech/provider.py`](backend/app/speech/provider.py) |
+| **Deep learning** | Qwen2.5 3B (a transformer, through Ollama) generates text; faster-whisper `small.en` transcribes speech. Both are pretrained and run locally. The hosted demo swaps in Groq-served models behind the same interfaces. | [`ai/ollama.py`](backend/app/ai/ollama.py), [`speech/provider.py`](backend/app/speech/provider.py) |
 | **Machine learning** | Learns a per-patient ability estimate online from each answer (a Rasch/Elo-style logistic model) | [`performance/ability.py`](backend/app/performance/ability.py) |
 | **NLP** | Scores answers with text normalisation and fuzzy matching, and classifies naming errors with Philadelphia Naming Test categories | [`analysis/`](backend/app/analysis/) |
 | **Prompt engineering** | Versioned, tested prompts, measured on the real model (below) | [`ai/prompts.py`](backend/app/ai/prompts.py) |
@@ -131,9 +142,9 @@ flowchart LR
 | Frontend | Next.js 16, TypeScript, Tailwind CSS 4, Zod |
 | Backend | FastAPI, Pydantic v2, SQLAlchemy 2 (async), Alembic, ARQ |
 | Data | PostgreSQL 18, Redis 8, MinIO |
-| AI | Ollama with Qwen2.5 3B, faster-whisper |
+| AI | Ollama with Qwen2.5 3B, faster-whisper (self-hosted); Groq (hosted demo) |
 | Testing | pytest, Hypothesis, Vitest, Playwright, axe-core |
-| Ops | Docker Compose, Caddy, GitHub Actions |
+| Ops | Docker Compose, Caddy, GitHub Actions; Vercel, Render and Neon for the hosted demo |
 
 ## Getting started
 
@@ -185,7 +196,7 @@ AI_PROVIDER=ollama
 AI_DEMO_VIEW=true
 ```
 
-For the self-hosted HTTPS setup, see [deployment](docs/deployment.md).
+For the self-hosted HTTPS setup, a public server with the real local model, or the free hosted demo, see [deployment](docs/deployment.md).
 
 ## Testing
 
@@ -201,7 +212,7 @@ cd frontend && npm test
 cd frontend && npm run test:e2e
 ```
 
-There are 292 backend tests, 34 frontend unit tests and 30 end-to-end tests, with automated accessibility checks. CI runs them all on every push to `main`, along with a dependency security audit.
+There are 305 backend tests, 34 frontend unit tests and 30 end-to-end tests, with automated accessibility checks. CI runs them all on every push to `main`, along with a dependency security audit.
 
 ## Evidence and limits
 
