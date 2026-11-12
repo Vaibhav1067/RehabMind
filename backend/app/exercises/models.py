@@ -70,6 +70,6 @@ class Exercise(Base):
     # Server-only scoring key (never serialized to the patient).
     expected: Mapped[dict[str, Any]] = mapped_column(JSONB)
     source: Mapped[str] = mapped_column(String(20))  # rule | fallback | ai
-    generator_version: Mapped[str] = mapped_column(String(40))
+    generator_version: Mapped[str] = mapped_column(String(120))
     status: Mapped[str] = mapped_column(String(16), default="pending")
     issued_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

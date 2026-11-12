@@ -157,3 +157,13 @@ def test_file_store_holds_only_ciphertext(tmp_path):
         assert not await audio.exists(key)
 
     asyncio.run(run())
+
+
+def test_hosted_model_id_fits_the_generator_version_column():
+    from app.ai.prompts import EXERCISE_PROMPT_VERSION
+    from app.core.config import Settings
+    from app.exercises.models import Exercise
+
+    model = Settings.model_fields["groq_model"].default
+    stored = f"{model}:{EXERCISE_PROMPT_VERSION}"
+    assert len(stored) <= Exercise.__table__.c.generator_version.type.length
