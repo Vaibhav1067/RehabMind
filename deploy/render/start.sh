@@ -35,5 +35,15 @@ python -m app.scripts.sync_stimuli
 # Speech worker: restart it if it ever exits, without taking the API down.
 (while true; do python -m app.workers.main || true; sleep 5; done) &
 
+# Free instances sleep after 15 minutes without inbound traffic and take about a minute to
+# wake. A request to our own public address every 5 minutes counts as traffic and keeps
+# the instance awake. It hits the liveness endpoint only (no database, no AI).
+if [ -n "${RENDER_EXTERNAL_URL:-}" ] && [ "${KEEP_AWAKE:-1}" = "1" ]; then
+  (while true; do
+    sleep 300
+    python -c "import os, urllib.request; urllib.request.urlopen(os.environ['RENDER_EXTERNAL_URL'] + '/api/health/live', timeout=30)" >/dev/null 2>&1 || true
+  done) &
+fi
+
 exec uvicorn app.main:app --host 0.0.0.0 --port "${PORT:-10000}" --no-server-header \
   --proxy-headers --forwarded-allow-ips '*'
