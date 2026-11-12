@@ -35,6 +35,25 @@ A non-localhost address sets `TLS_ISSUER=acme` (Caddy obtains a public certifica
 `--ai ollama` enables the `ai` profile: an `ollama` service inside the stack, plus a one-shot
 download of `qwen2.5:3b` (~2 GB). Allow 8 GB RAM or more with the model loaded.
 
+## Free hosted demo (no server, no card)
+
+For a public demo without a server: the frontend on Vercel, the backend on Render's free
+instance (512 MB), Postgres on Neon. The language model and speech recognition do not fit
+in 512 MB, so this variant uses Groq's hosted API for both: **recordings and prompts leave
+the server**, unlike the self-hosted stack. Demo data only.
+
+1. Neon: create a project, then `cd backend && uv run python -m app.scripts.setup_external_db`
+   (creates the roles and database, writes the three `POSTGRES_*` values to `.env.space`).
+2. Render: new web service from this repository using `render.yaml` (Docker,
+   `deploy/render/Dockerfile`, free plan). Set `POSTGRES_HOST`, `POSTGRES_MIGRATOR_PASSWORD`,
+   `POSTGRES_APP_PASSWORD`, `GROQ_API_KEY` and `FRONTEND_ORIGINS` (a JSON list holding the
+   Vercel address). The container runs the API, the worker and Redis; migrations run on boot.
+3. Vercel: project with root directory `frontend` and `BACKEND_URL` set to the Render address.
+
+Limits: the backend sleeps after 15 idle minutes and takes about a minute to wake; sessions
+and queued audio do not survive a restart; no shell, so create the first accounts by running
+`app.scripts.create_user` from a machine that can reach the database.
+
 ## Topology
 
 ```

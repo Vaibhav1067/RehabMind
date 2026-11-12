@@ -17,6 +17,8 @@ browser MediaRecorder (≤15 s, ≤2 MB)
 - Safety nets: a sweep every 5 min fails and deletes recordings stuck >10 min; the bucket
   expires any object after 1 day; bucket versioning is refused by `provision_storage.py`.
 - Audio never leaves our infrastructure: STT runs locally, not via a cloud API.
+  Exception: the free hosted demo (see deployment.md) sends recordings and AI prompts to
+  Groq, because its 512 MB host cannot run the models. It must not hold real patient data.
 - Development uses synthetic speech only (e.g. Windows SAPI); `*.wav`/`*.webm` are git-ignored.
 - Future clinician-approved retention would be a policy in `app/storage/audio.py`; not in V1.
 
@@ -57,6 +59,7 @@ keys or URLs: no clinician endpoint selects them.
 | Access logs | Container stdout; no IDs or bodies |
 
 No data is sent to external services: speech recognition and AI personalization run locally.
+This holds for the self-hosted stack, not for the free hosted demo, which uses Groq for both.
 
 ## Other data
 
