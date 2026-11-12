@@ -1,6 +1,7 @@
 """Write .env.production with strong random secrets for compose.prod.yaml.
 
-Usage:  python scripts/generate_prod_env.py [--site-address localhost]
+Usage:  python scripts/generate_prod_env.py [--site-address localhost] [--ai fake|ollama|none]
+A public --site-address gets a public (ACME) certificate; localhost uses Caddy's local CA.
 Refuses to overwrite an existing file. The file is git-ignored; keep it out of backups
 that leave the host. Standard library only.
 """
@@ -17,6 +18,7 @@ TARGET = Path(__file__).resolve().parent.parent / ".env.production"
 def main() -> None:
     p = argparse.ArgumentParser()
     p.add_argument("--site-address", default="localhost")
+    p.add_argument("--ai", choices=["fake", "ollama", "none"], default="fake")
     args = p.parse_args()
     if TARGET.exists():
         sys.exit(f"refused: {TARGET.name} already exists")
@@ -26,6 +28,10 @@ def main() -> None:
 
     values = {
         "SITE_ADDRESS": args.site_address,
+        "TLS_ISSUER": "internal" if args.site_address == "localhost" else "acme",
+        "AI_PROVIDER": args.ai,
+        # The "ai" profile adds the Ollama service and downloads the model on first start.
+        "COMPOSE_PROFILES": "ai" if args.ai == "ollama" else "",
         "POSTGRES_SUPERUSER_PASSWORD": token(),
         "POSTGRES_MIGRATOR_PASSWORD": token(),
         "POSTGRES_APP_PASSWORD": token(),

@@ -21,6 +21,20 @@ user**). The system generates a 16-character first password, shows it to the adm
 stores only its Argon2id hash.
 The clinician sets practice limits in the UI before the patient can practise.
 
+## Public server (real AI, public certificate)
+
+On a Linux host with Docker, ports 80 and 443 open, and a hostname pointing at it
+(`<ip-with-dashes>.sslip.io` works without buying a domain):
+
+```bash
+python3 scripts/generate_prod_env.py --site-address 203-0-113-7.sslip.io --ai ollama
+docker compose --env-file .env.production -f compose.prod.yaml up -d --build
+```
+
+A non-localhost address sets `TLS_ISSUER=acme` (Caddy obtains a public certificate).
+`--ai ollama` enables the `ai` profile: an `ollama` service inside the stack, plus a one-shot
+download of `qwen2.5:3b` (~2 GB). Allow 8 GB RAM or more with the model loaded.
+
 ## Topology
 
 ```

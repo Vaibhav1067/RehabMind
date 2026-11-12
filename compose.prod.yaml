@@ -21,8 +21,13 @@ x-backend-env: &backend-env
   S3_SECRET_KEY: ${S3_SECRET_KEY:?}
   AUDIO_ENCRYPTION_KEY: ${AUDIO_ENCRYPTION_KEY:?}
   FRONTEND_ORIGINS: '["https://${SITE_ADDRESS:-localhost}"]'
-  AI_PROVIDER: fake
+  # AI: "fake" by default. For the real model set AI_PROVIDER=ollama and COMPOSE_PROFILES=ai
+  # in .env.production (generate_prod_env.py --ai ollama does both).
+  AI_PROVIDER: ${AI_PROVIDER:-fake}
   AI_FAKE_FAULT_RATE: "0"
+  AI_TIMEOUT_S: ${AI_TIMEOUT_S:-20}
+  OLLAMA_BASE_URL: http://ollama:11434
+  OLLAMA_MODEL: ${OLLAMA_MODEL:-qwen2.5:3b}
 
 services:
   postgres:
@@ -65,6 +70,27 @@ services:
     volumes:
       - minio-data:/data
     restart: unless-stopped
+
+  # Local LLM (profile "ai"). No published ports; reachable only inside the stack.
+  ollama:
+    image: ollama/ollama:latest
+    profiles: ["ai"]
+    environment:
+      OLLAMA_KEEP_ALIVE: "-1"  # keep the model in memory: no cold start per request
+    volumes:
+      - ollama-models:/root/.ollama
+    restart: unless-stopped
+
+  # One-shot: download the model into the ollama-models volume (no-op when present).
+  ollama-pull:
+    image: ollama/ollama:latest
+    profiles: ["ai"]
+    environment:
+      OLLAMA_HOST: http://ollama:11434
+    command: ["pull", "${OLLAMA_MODEL:-qwen2.5:3b}"]
+    depends_on:
+      - ollama
+    restart: on-failure
 
   # One-shot: schema migrations (as the schema-owner role) + curated picture library.
   migrate:
@@ -125,6 +151,7 @@ services:
     image: caddy:2.11.2-alpine
     environment:
       SITE_ADDRESS: ${SITE_ADDRESS:-localhost}
+      TLS_ISSUER: ${TLS_ISSUER:-internal}
     ports:
       - "80:80"
       - "443:443"
@@ -140,4 +167,5 @@ volumes:
   redis-data:
   minio-data:
   whisper-models:
+  ollama-models:
   caddy-data:
