@@ -38,15 +38,27 @@ class Settings(BaseSettings):
 
     audio_encryption_key: SecretStr
     audio_max_bytes: int = 2_000_000
+    # Where encrypted audio waits for transcription. "file" = a local directory, for a
+    # single-container deployment where the API and the worker share a filesystem.
+    audio_store: Literal["s3", "file"] = "s3"
+    audio_file_dir: str = "audio-store"
     # Generative AI. "ollama" = a real local transformer LLM via Ollama ($0, on-device);
-    # "fake" = offline deterministic stand-in for tests; "none" disables AI.
-    ai_provider: Literal["none", "fake", "ollama"] = "fake"
+    # "groq" = a hosted LLM (prompts leave this server); "fake" = offline deterministic
+    # stand-in for tests; "none" disables AI.
+    ai_provider: Literal["none", "fake", "ollama", "groq"] = "fake"
     # Share of deliberately faulty fake outputs, to exercise validation/fallback in demos.
     ai_fake_fault_rate: float = Field(default=0.2, ge=0, le=1)
     # Seconds per LLM call before the attempt counts as failed (then retry / fallback).
     ai_timeout_s: float = Field(default=20, gt=0, le=120)
     ollama_base_url: str = "http://127.0.0.1:11434"
     ollama_model: str = "qwen2.5:3b"
+    # Hosted alternative for hosts too small for local models (data leaves the server).
+    groq_api_key: SecretStr | None = None
+    groq_base_url: str = "https://api.groq.com/openai/v1"
+    groq_model: str = "openai/gpt-oss-20b"
+    groq_speech_model: str = "whisper-large-v3-turbo"
+    # "whisper" = faster-whisper on this machine; "groq" = hosted Whisper.
+    speech_provider: Literal["whisper", "groq"] = "whisper"
     # Development-only "AI pipeline" view for demonstrations (refused in production).
     ai_demo_view: bool = False
     whisper_model: str = "small.en"
@@ -70,6 +82,8 @@ class Settings(BaseSettings):
 
     @model_validator(mode="after")
     def _production_guards(self) -> "Settings":
+        if "groq" in (self.ai_provider, self.speech_provider) and not self.groq_api_key:
+            raise ValueError("GROQ_API_KEY is required when a groq provider is selected")
         if self.app_env == "production":
             if any(o.startswith("http://") for o in self.frontend_origins):
                 raise ValueError("production origins must be https")

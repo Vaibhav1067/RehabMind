@@ -62,6 +62,16 @@ def get_ai_provider() -> AIProvider | None:
             _provider = OllamaAIProvider(
                 settings.ollama_base_url, settings.ollama_model, timeout_s=settings.ai_timeout_s
             )
+        elif kind == "groq":
+            from app.ai.groq import GroqAIProvider
+
+            assert settings.groq_api_key is not None  # guarded by settings validation
+            _provider = GroqAIProvider(
+                settings.groq_base_url,
+                settings.groq_api_key.get_secret_value(),
+                settings.groq_model,
+                timeout_s=settings.ai_timeout_s,
+            )
         else:  # pragma: no cover - guarded by settings validation
             raise ValueError(f"unknown AI provider {kind}")
     return _provider

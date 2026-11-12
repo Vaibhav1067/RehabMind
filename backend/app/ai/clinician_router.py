@@ -39,7 +39,7 @@ router = APIRouter(prefix="/patients/{patient_id}", tags=["ai"])
 
 
 class AIStatus(BaseModel):
-    provider: str  # ollama | fake | none
+    provider: str  # ollama | groq | fake | none
     model: str | None
     generative: bool  # True only for a real LLM
     reachable: bool
@@ -59,6 +59,17 @@ async def ai_status(_: ClinicianUser) -> AIStatus:
             generative=True,
             reachable=health["reachable"],
             model_available=health["model_available"],
+            demo_view=settings.ai_demo_view,
+        )
+    if settings.ai_provider == "groq":
+        # Hosted: no per-request health probe (it would spend rate limit). Calls that fail
+        # fall back to the rule-based path like any other provider error.
+        return AIStatus(
+            provider="groq",
+            model=settings.groq_model,
+            generative=True,
+            reachable=True,
+            model_available=True,
             demo_view=settings.ai_demo_view,
         )
     return AIStatus(
