@@ -19,6 +19,8 @@ class Settings(BaseSettings):
     postgres_host: str = "127.0.0.1"
     postgres_port: int = 5433
     postgres_db: str = "rehabmind"
+    # Require TLS to the database (hosted Postgres such as Neon). Off for the in-stack one.
+    postgres_ssl: bool = False
     postgres_app_password: SecretStr
     postgres_migrator_password: SecretStr
 
@@ -109,6 +111,7 @@ class Settings(BaseSettings):
         return (
             f"postgresql+asyncpg://{user}:{pw}@{self.postgres_host}:"
             f"{self.postgres_port}/{self.postgres_db}"
+            f"{'?ssl=require' if self.postgres_ssl else ''}"
         )
 
     @property
