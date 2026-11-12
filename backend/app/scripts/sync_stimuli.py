@@ -5,6 +5,7 @@ Usage:  uv run python -m app.scripts.sync_stimuli
 
 import asyncio
 
+import app.models  # noqa: F401  (registers every table for FK resolution)
 from app.core.db import SessionLocal
 from app.exercises.catalog import sync_stimuli
 
