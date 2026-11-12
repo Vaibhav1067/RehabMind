@@ -1,13 +1,14 @@
 # RehabMind
 
-**Speech and language practice at home for people with aphasia after a stroke, guided by their clinician and supported by local AI.**
+**Speech and language practice at home for people with aphasia after a stroke, guided by their clinician and supported by audited AI that can run entirely on your own machine.**
 
 ![Next.js](https://img.shields.io/badge/Next.js-16-000000?logo=nextdotjs&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-Python%203.12-009688?logo=fastapi&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-18-4169E1?logo=postgresql&logoColor=white)
-![AI](https://img.shields.io/badge/AI-local%20%7C%20audited-0B7A75)
-![Cost](https://img.shields.io/badge/cost-%240%20%7C%20no%20API%20keys-2E7D32)
+![AI](https://img.shields.io/badge/AI-local%20or%20hosted%20%7C%20audited-0B7A75)
+![Cost](https://img.shields.io/badge/cost-%240%20%7C%20free%20tiers%20only-2E7D32)
 ![Status](https://img.shields.io/badge/status-academic%20prototype-9E9E9E)
+[![Live demo](https://img.shields.io/badge/live%20demo-rehabmind.vercel.app-1565C0)](https://rehabmind.vercel.app)
 
 Aphasia makes it hard to find, say or put words together. Recovery takes a lot of practice, but time with a speech and language therapist is limited. RehabMind fills the gap between sessions with short, calm picture exercises. Patients answer by speaking, typing or tapping. The app scores each answer and personalises the next exercise, always inside limits set by the patient's clinician.
 
